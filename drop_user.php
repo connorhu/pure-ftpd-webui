@@ -10,12 +10,16 @@ $get_user_language = mysql_query("SELECT language FROM userlist WHERE user='$use
 if (!$get_user_language) {
 	if (($err = mysql_errno()) == 1054) {
 		$info = "<p align=\"center\" class=\"table_error\">Your version of Pure-FTPd WebUI users table is not currently supported by current version, please upgrade your database to use miltilanguage support.</p>";
-		include("lang/english.php");
 	}
+	$language = "english";
+	include("lang/english.php");
 }
 else {
 	$language_row = mysql_fetch_array ($get_user_language);
 	$language = $language_row['language'];
+	if ($language == '') {
+		$language = "english";
+	}
 	include("lang/$language.php");
 }
 
@@ -24,7 +28,7 @@ echo("\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
 echo("<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en-US\" xml:lang=\"en-US\">");
 echo("<head>");
 echo("<title>$du_title</title>");
-echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" />");
+echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
 ?>
 <link rel='shortcut icon' href='img/favicon.ico' />
 <link href="media/css/stile.css" rel="StyleSheet" type="text/css">
@@ -33,16 +37,16 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 <body id="dt_example" class="ex_highlight_row">
 <table width="1000px" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" class="main_border">
   <tbody>
-<? include("blocks/header.php"); ?>
+<?php include("blocks/header.php"); ?>
   <tr>
       <td><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
          <tr>
                <td valign="top">
 <table width="100%" align="center" border="0" cellpadding="0" cellspacing="0">
     <tr>
-      <? include("blocks/menu.php"); ?>
+      <?php include("blocks/menu.php"); ?>
     </tr>
-</table></br><? echo("$info"); ?></br>
+</table></br><?php echo("$info"); ?></br>
                 <?php
                 if (isset ($id))
                   {
@@ -61,7 +65,7 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
           </table>
         </td>
        </tr>
-<? include("blocks/footer.php"); ?>
+<?php include("blocks/footer.php"); ?>
   </tbody>
 </table>
 </body>

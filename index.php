@@ -1,5 +1,6 @@
 <?php
 $master = "index.php";
+include ("blocks/default.php");
 include ("blocks/lock.php");
 $user = $_SERVER['PHP_AUTH_USER'];
 include ("blocks/db_connect.php");
@@ -9,12 +10,16 @@ $get_user_language = mysql_query("SELECT language FROM userlist WHERE user='$use
 if (!$get_user_language) {
 	if (($err = mysql_errno()) == 1054) {
 		$info = "<p align=\"center\" class=\"table_error\">Your version of Pure-FTPd WebUI users table is not currently supported by current version, please upgrade your database to use miltilanguage support.</p>";
-		include("lang/english.php");
 	}
+	$language = "english";
+	include("lang/english.php");
 }
 else {
 	$language_row = mysql_fetch_array ($get_user_language);
 	$language = $language_row['language'];
+	if ($language == '') {
+		$language = "english";
+	}
 	include("lang/$language.php");
 }
 
@@ -23,7 +28,7 @@ echo("\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
 echo("<HTML xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en-US\" xml:lang=\"en-US\">");
 echo("<HEAD>");
 echo("<title>$ua_title</title>");
-echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" />");
+echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
 echo("<meta http-equiv='refresh' content='30'/>");
 ?>
 <link rel='shortcut icon' href='img/favicon.ico' />
@@ -33,7 +38,7 @@ echo("<meta http-equiv='refresh' content='30'/>");
 <link href="media/css/jquery-ui-1.7.2.custom.css" rel="StyleSheet" type="text/css">
 <script type="text/javascript" language="javascript" src="media/js/jquery.js"></script>
 <script type="text/javascript" language="javascript" src="media/js/jquery.dataTables.js"></script>
-<? echo("
+<?php echo("
 <script type=\"text/javascript\" charset=\"utf-8\">
 			$(document).ready(function() {
 				$('#example').dataTable( {
@@ -50,18 +55,18 @@ echo("<meta http-equiv='refresh' content='30'/>");
 <body id="dt_example" class="ex_highlight_row">
 <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" class="main_border">
   <tbody>
-<? include("blocks/header.php"); ?>
+<?php include("blocks/header.php"); ?>
   <tr>
       <td><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
          <tr>
                <td valign="top">
 <table width="100%" align="center" border="0" cellpadding="0" cellspacing="0">
     <tr>
-      <? include("blocks/menu.php"); ?>
+      <?php include("blocks/menu.php"); ?>
     </tr>
-</table></br><? echo("$info"); ?></br></br></br>
+</table></br><?php echo("$info"); ?></br></br></br>
 
-	<? echo("<p class=\"text_title\" align=\"center\">$ua_t_title</p>"); ?>
+	<?php echo("<p class=\"text_title\" align=\"center\">$ua_t_title</p>"); ?>
 
 	<div id="container">
 
@@ -105,7 +110,7 @@ echo("<meta http-equiv='refresh' content='30'/>");
           </table>
         </td>
        </tr>
-<? include("blocks/footer.php"); ?>
+<?php include("blocks/footer.php"); ?>
   </tbody>
 </table>
 </body>

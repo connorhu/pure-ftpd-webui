@@ -1,5 +1,6 @@
 <?php
 $master = "daemon_control.php";
+include ("blocks/default.php");
 include ("blocks/lock.php");
 include ("blocks/db_connect.php"); /*Подключаемся к базе*/
 $user = $_SERVER['PHP_AUTH_USER'];
@@ -9,12 +10,16 @@ $get_user_language = mysql_query("SELECT language FROM userlist WHERE user='$use
 if (!$get_user_language) {
 	if (($err = mysql_errno()) == 1054) {
 		$info = "<p align=\"center\" class=\"table_error\">Your version of Pure-FTPd WebUI users table is not currently supported by current version, please upgrade your database to use miltilanguage support.</p>";
-		include("lang/english.php");
 	}
+	$language = "english";
+	include("lang/english.php");
 }
 else {
 	$language_row = mysql_fetch_array ($get_user_language);
 	$language = $language_row['language'];
+	if ($language == '') {
+		$language = "english";
+	}
 	include("lang/$language.php");
 }
 
@@ -23,7 +28,7 @@ echo("\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
 echo("<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en-US\" xml:lang=\"en-US\">");
 echo("<head>");
 echo("<title>$dc_title</title>");
-echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" />");
+echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
 ?>
 <link rel='shortcut icon' href='img/favicon.ico' />
 <link href="media/css/stile.css" rel="StyleSheet" type="text/css">
@@ -34,23 +39,23 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 <body id="dt_example" class="ex_highlight_row">
 <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" class="main_border">
   <tbody>
-<? include("blocks/header.php"); ?>
+<?php include("blocks/header.php"); ?>
   <tr>
       <td><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
          <tr>
                <td valign="top">
 <table width="100%" align="center" border="0" cellpadding="0" cellspacing="0">
     <tr>
-      <? include("blocks/menu.php"); ?>
+      <?php include("blocks/menu.php"); ?>
     </tr>
-</table></br><? echo("$info"); ?></br>
+</table></br><?php echo("$info"); ?></br>
 
 		
 			<?php
 				// Эта часть используется, если была нажата кнопка "Править конфиг"
 				if($_POST['edit']) {
 					// Путь к файлу
-					$filename = "/etc/pure-ftpd/pure-ftpd.conf";
+					$filename = "$pureftpd_conf_path";
 					// Открываем файл для чтения
 					$handle = fopen($filename, "r");
 					// Вытаскиваем содержимое файла
@@ -100,23 +105,23 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 
 					// Если была дана команда "старт" - стартуем демона
 					if ($daemon_ctl == 'start') {
-						$result = shell_exec("sudo /etc/init.d/pure-ftpd start");
+						$result = shell_exec("sudo $pureftpd_init_script_path start");
 						echo("<p>$result</p>");}
 
 					// Если была дана комнда "стоп" - останавливаем демона
 					elseif ($daemon_ctl == 'stop') {
-						$result = shell_exec("sudo /etc/init.d/pure-ftpd stop");
+						$result = shell_exec("sudo $pureftpd_init_script_path stop");
 						echo("<p>$result</p>");}
 
 					// Если была дана команда "рестарт" - рестартуем демона
 					elseif ($daemon_ctl == 'restart') {
-						$result = shell_exec("sudo /etc/init.d/pure-ftpd stop");
+						$result = shell_exec("sudo $pureftpd_init_script_path stop");
 						echo("<p>$result</p>");
-						$result = shell_exec("sudo /etc/init.d/pure-ftpd start");
+						$result = shell_exec("sudo $pureftpd_init_script_path start");
 						echo("<p>$result</p>");}
 
 					// Если ни один вариант не верен - выдаём ошибку
-					else {echo("<p><strong>Передана неверная команда демону Pure-FTPd</strong></p>");}
+					else {echo("<p><strong>$dc_wrongcommand</strong></p>");}
 
 					echo "</br>
 							<form method='post' action='$PHP_SELF'>
@@ -166,7 +171,7 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
           </table>
         </td>
        </tr>
-<? include("blocks/footer.php"); ?>
+<?php include("blocks/footer.php"); ?>
   </tbody>
 </table>
 </body>

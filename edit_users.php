@@ -1,5 +1,6 @@
 <?php
 $master = "edit_users.php";
+include ("blocks/default.php");
 include ("blocks/lock.php");
 include ("blocks/db_connect.php"); /*Подключаемся к базе*/
 if (isset ($_GET['id'])) {$id = $_GET['id'];}
@@ -10,12 +11,16 @@ $get_user_language = mysql_query("SELECT language FROM userlist WHERE user='$use
 if (!$get_user_language) {
 	if (($err = mysql_errno()) == 1054) {
 		$info = "<p align=\"center\" class=\"table_error\">Your version of Pure-FTPd WebUI users table is not currently supported by current version, please upgrade your database to use miltilanguage support.</p>";
-		include("lang/english.php");
 	}
+	$language = "english";
+	include("lang/english.php");
 }
 else {
 	$language_row = mysql_fetch_array ($get_user_language);
 	$language = $language_row['language'];
+	if ($language == '') {
+		$language = "english";
+	}
 	include("lang/$language.php");
 }
 
@@ -24,7 +29,7 @@ echo("\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
 echo("<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en-US\" xml:lang=\"en-US\">");
 echo("<head>");
 echo("<title>$um_title</title>");
-echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" />");
+echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
 ?>
 <link rel='shortcut icon' href='img/favicon.ico' />
 <link href="media/css/stile.css" rel="StyleSheet" type="text/css">
@@ -33,7 +38,7 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 <link href="media/css/jquery-ui-1.7.2.custom.css" rel="StyleSheet" type="text/css">
 <script type="text/javascript" language="javascript" src="media/js/jquery.js"></script>
 <script type="text/javascript" language="javascript" src="media/js/jquery.dataTables.js"></script>
-<? echo("
+<?php echo("
 <script type=\"text/javascript\" charset=\"utf-8\">
             $(document).ready(function() {
                 $('#users_table').dataTable( {
@@ -49,16 +54,16 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 <body id="dt_example" class="ex_highlight_row">
 <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" class="main_border">
   <tbody>
-<? include("blocks/header.php"); ?>
+<?php include("blocks/header.php"); ?>
   <tr>
       <td><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
          <tr>
                <td valign="top">
 <table width="100%" align="center" border="0" cellpadding="0" cellspacing="0">
     <tr>
-      <? include("blocks/menu.php"); ?>
+      <?php include("blocks/menu.php"); ?>
     </tr>
-		</table></br><? echo("$info"); ?></br>
+		</table></br><?php echo("$info"); ?></br>
 				<?php
 					// Эта часть используется, если была нажата кнопка "Добавить пользователя"
 					if($_POST['add_user']) {
@@ -71,7 +76,10 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 								</p>
 								<p>
 									<label>$um_userform_status</br>
-									<INPUT type='text' name='status' id='status'>
+									<select name='status'>
+									<option value='0'>inactive</option>
+									<option value='1'>active</option>
+									</select>
 									</label>
 								</p>
 								<p>
@@ -81,7 +89,7 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 								</p>
 								<p>
 									<label>$um_userform_folder</br>
-									<INPUT type='text' name='Dir' id='Dir'>
+									<INPUT type='text' name='Dir' id='Dir' value='$ftp_dir'>
 									</label>
 								</p>
                                                                 <p>
@@ -97,17 +105,27 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 
 								<p>
 									<label>$um_userform_ullimit</br>
-									<INPUT type='text' name='ULBandwidth' id='ULBandwidth'>
+									<INPUT type='text' name='ULBandwidth' id='ULBandwidth' value='$upload_speed'>
 									</label>
 								</p>
 								<p>
 									<label>$um_userform_dllimit</br>
-									<INPUT type='text' name='DLBandwidth' id='DLBandwidth'>
+									<INPUT type='text' name='DLBandwidth' id='DLBandwidth' value='$download_speed'>
 									</label>
 								</p>
 								<p>
 									<label>$um_userform_permip</br>
-									<INPUT type='text' name='ipaccess' id='ipaccess'>
+									<INPUT type='text' name='ipaccess' id='ipaccess' value='$permitted_ip'>
+									</label>
+								</p>
+								<p>
+									<label>$um_userform_quotasize</br>
+									<INPUT type='text' name='quotasize' id='quotasize' value='$quota_size'>
+									</label>
+								</p>
+								<p>
+									<label>$um_userform_quotafiles</br>
+									<INPUT type='text' name='quotafiles' id='quotafiles' value='$quota_files'>
 									</label>
 								</p></br>
 								<p>
@@ -137,26 +155,46 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 						if (isset ($_POST['ULBandwidth'])) {$ULBandwidth = $_POST['ULBandwidth']; if ($ULBandwidth == '') {unset ($ULBandwidth);}}
 						if (isset ($_POST['DLBandwidth'])) {$DLBandwidth = $_POST['DLBandwidth']; if ($DLBandwidth == '') {unset ($DLBandwidth);}}
 						if (isset ($_POST['ipaccess'])) {$ipaccess = $_POST['ipaccess']; if ($ipaccess == '') {unset ($ipaccess);}}
+						if (isset ($_POST['quotasize'])) {
+							$quotasize = $_POST['quotasize']; if ($quotasize == '') {
+								unset ($quotasize);
+							}
+						}
+						if (isset ($_POST['quotafiles'])) {
+							$quotafiles = $_POST['quotafiles']; if ($quotafiles == '') {
+								unset ($quotafiles);
+							}
+						}
 
 						// Если папка не была задана - выставляем значение по умолчанию
 						if ($Dir == '') {
-							$Dir = '/media/FTP';}
+							$Dir = $ftp_dir;}
 
 						// Если ограничение скорости аплода не было задано - выставляем значение по умолчанию
 						if ($ULBandwidth == '') {
-							$ULBandwidth = '0';}
+							$ULBandwidth = $upload_speed;}
 
 						// Если ограничение скорости даунлода не было задано - выставляем значение по умолчанию
 						if ($DLBandwidth == '') {
-							$DLBandwidth = '0';}
+							$DLBandwidth = $download_speed;}
 
 						// Если разрешённый IP-адрес не был задан - выставляем значение по умолчанию
 						if ($ipaccess == '') {
-							$ipaccess = '*';}
+							$ipaccess = $permitted_ip;}
+						
+						// Если размер квоты не был задан - выставляем значение по умолчанию
+						if ($quotasize == '') {
+							$quotasize = $quota_size;
+						}
+
+						// Если размер квоты не был задан - выставляем значение по умолчанию
+						if ($quotafiles == '') {
+							$quotafiles = $quota_files;
+						}
 
 						// Если все нужные поля заполнены, добавляем пользователя в базу pureftpd
-						if (isset ($User) && isset($status) && isset($Password) && isset($Uid) && isset($Gid) && isset ($Dir) && isset ($DLBandwidth) && isset ($ULBandwidth) && isset ($_POST['ipaccess'])) {
-							$result = mysql_query ("INSERT INTO ftpd (User,status,Password,Uid,Gid,Dir,ULBandwidth,DLBandwidth,ipaccess) VALUES ('$User','$status',md5('$Password'),'$Uid','$Gid','$Dir','$ULBandwidth','$DLBandwidth','$ipaccess')");
+						if (isset ($User) && isset($status) && isset($Password) && isset($Uid) && isset($Gid) && isset ($Dir) && isset ($DLBandwidth) && isset ($ULBandwidth) && isset ($ipaccess) && isset ($quotasize) && isset ($quotafiles)) {
+							$result = mysql_query ("INSERT INTO ftpd (User,status,Password,Uid,Gid,Dir,ULBandwidth,DLBandwidth,ipaccess,QuotaSize,QuotaFiles) VALUES ('$User','$status',md5('$Password'),'$Uid','$Gid','$Dir','$ULBandwidth','$DLBandwidth','$ipaccess','$quotasize','$quotafiles')");
 							if ($result == 'true') {echo "<p><strong>$um_add_presultok</strong></p>";}
 							else {echo "<p><strong>$um_add_presulterror</strong></p>";}
 						}
@@ -187,6 +225,16 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 						if (isset ($_POST['ULBandwidth'])) {$ULBandwidth = $_POST['ULBandwidth']; if ($ULBandwidth == '') {unset ($ULBandwidth);}}
 						if (isset ($_POST['DLBandwidth'])) {$DLBandwidth = $_POST['DLBandwidth']; if ($DLBandwidth == '') {unset ($DLBandwidth);}}
 						if (isset ($_POST['ipaccess'])) {$ipaccess = $_POST['ipaccess']; if ($ipaccess == '') {unset ($ipaccess);}}
+						if (isset ($_POST['quotasize'])) {
+							$quotasize = $_POST['quotasize']; if ($quotasize == '') {
+								unset ($quotasize);
+							}
+						}
+						if (isset ($_POST['quotafiles'])) {
+							$quotafiles = $_POST['quotafiles']; if ($quotafiles == '') {
+								unset ($quotafiles);
+							}
+						}
 						if (isset ($_POST['id'])) {$id = $_POST['id']; if ($id == '') {unset ($id);}}
 
 						// Запрашиваем из БД настройки пользователя
@@ -194,7 +242,7 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 						$array = mysql_fetch_array ($result);
 
 						// Проверяем были ли внесены какие-то изменения
-						if (($Dir != $array[Dir]) || ($User != $array[User]) || ($status != $array[status]) || (isset ($Password)) || ($ULBandwidth != $array[ULBandwidth]) || ($DLBandwidth != $array[DLBandwidth]) || ($ipaccess != $array[ipaccess]) || ($Uid != $array['Uid']) || ($Uid != $array['Uid'])) {
+						if (($Dir != $array[Dir]) || ($User != $array[User]) || ($status != $array[status]) || (isset ($Password)) || ($ULBandwidth != $array[ULBandwidth]) || ($DLBandwidth != $array[DLBandwidth]) || ($ipaccess != $array[ipaccess]) || ($Uid != $array['Uid']) || ($Uid != $array['Uid']) || ($quotasize != $array[QuotaSize]) || ($quotafiles != $array[QuotaFiles])) {
 
 							if (($Uid != $array['Uid']) && isset ($id)) {
                                                                 $result = mysql_query ("UPDATE ftpd SET Uid='$Uid' WHERE id='$id'");
@@ -258,6 +306,23 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 								if ($result == 'true') {echo "<p><strong>$um_edit_permipok</strong></p>";}
 								else {echo "<p><strong>$um_edit_permiperror</strong></p>";}
 							}
+							// Если изменён размер квоты, вносим изменения в базу
+							if (($quotasize != $array[QuotaSize]) && isset ($id)) {
+								$result = mysql_query ("UPDATE ftpd SET QuotaSize='$quotasize' WHERE id='$id'");
+								if ($result == 'true') {
+									echo "<p><strong>$um_edit_quotasizeok</strong></p>";
+							}
+							else {echo "<p><strong>$um_edit_quotasizeerror</strong></p>";}
+							}
+							// Если изменён размер квоты, вносим изменения в базу
+							if (($quotafiles != $array[QuotaFiles]) && isset ($id)) {
+								$result = mysql_query ("UPDATE ftpd SET QuotaFiles='$quotafiles' WHERE id='$id'");
+								if ($result == 'true') {
+									echo "<p><strong>$um_edit_quotafilesok</strong></p>";
+							}
+							else {echo "<p><strong>$um_edit_quotafileserror</strong></p>";
+							}
+							}
 						}
 						else {echo"<p><strong>$um_edit_nochanges</strong></p>";}
 
@@ -286,6 +351,8 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 										<th>$um_t_th4</th>
 										<th>$um_t_th5</th>
 										<th>$um_t_th6</th>
+										<th>$um_t_th7</th>
+										<th>$um_t_th8</th>
 									</tr>
 								</thead><tbody>");
 						$result = mysql_query ("SELECT * FROM ftpd");
@@ -301,6 +368,8 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 										<td align='center'>$myrow[ULBandwidth]</td>
 										<td align='center'>$myrow[DLBandwidth]</td>
 										<td align='center'>$myrow[ipaccess]</td>
+										<td align='center'>$myrow[QuotaSize]</td>
+										<td align='center'>$myrow[QuotaFiles]</td>
 									</tr>",$myrow ["id"],$myrow ["User"]);
 						}
 					while ($myrow = mysql_fetch_array ($result));
@@ -321,6 +390,12 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 					else {
 						$result = mysql_query ("SELECT * FROM ftpd WHERE id=$id");
 						$myrow = mysql_fetch_array ($result);
+						if ($myrow[status] == 0) {
+							$select = "<option value='0' selected='selected'>inactive</option><option value='1'>active</option>";
+						}
+						else {
+							$select = "<option value='0'>inactive</option><option value='1' selected='selected'>active</option>";
+						}
 						print <<<HERE
 							<FORM name="form1" method="post" action="$PHP_SELF">
 								<p>
@@ -330,7 +405,9 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 								</p>
 								<p>
 									<label>$um_userform_status</br>
-									<INPUT value="$myrow[status]" type="text" name="status" id="status">
+									<select name='status'>
+									$select
+									</select>
 									</label>
 								</p>
 								<p>
@@ -368,6 +445,16 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 									<labe>$um_userform_permip</br>
 									<INPUT value="$myrow[ipaccess]" type="text" name="ipaccess" id="ipaccess">
 									</label>
+								</p>
+								<p>
+									<labe>$um_userform_quotasize</br>
+									<INPUT value="$myrow[QuotaSize]" type="text" name="quotasize" id="quotasize">
+									</label>
+								</p>
+								<p>
+									<labe>$um_userform_quotafiles</br>
+									<INPUT value="$myrow[QuotaFiles]" type="text" name="quotafiles" id="quotafiles">
+									</label>
 								</p></br>
 									<INPUT name="id" type="hidden" value="$myrow[id]">
 								<p>
@@ -387,7 +474,7 @@ HERE;
 				?>
 		</td></tr></table>
 	</td></tr>
-<? include("blocks/footer.php"); ?>
+<?php include("blocks/footer.php"); ?>
 </tbody></table>
 </body>
 </html>
