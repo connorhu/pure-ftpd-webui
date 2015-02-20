@@ -79,17 +79,18 @@ echo("<meta http-equiv='refresh' content='30'/>");
 				</thead><tbody>");
 
 		// Активные пользователи
-		$result = shell_exec("sudo /etc/init.d/pure-ftpd status");
+		//$result = shell_exec("sudo /etc/init.d/pure-ftpd status");
+                $result = shell_exec("sudo /usr/sbin/pure-ftpwho -s");
 		$array = explode("\n", $result);
 		foreach ($array as $users) {
 		if (($users != "") and (substr($users, 0, 3) != "+--") and (substr($users, 2, 3) != "PID")) {
-		list ($tmp, $pid, $user, $speed, $stat, $file) = explode("|", $users);
-		
+//		list ($tmp, $pid, $user, $speed, $stat, $file) = explode("|", $users);
+		list($tmp,$user,$time,$stat,$file,$peer,$local,$port,$current,$total,$percent,$speed) = explode("|", $users);
 		echo("		<tr>
 						<td class='center'>$user</td>
-						<td class='center'>$speed</td>
+						<td class='center'>$time s / $speed</td>
 						<td class='center'>$stat</td>
-						<td>$file</td>
+						<td>$file @ $peer</td>
 					</tr>");}}
 
 		echo("	</tbody></div>");
