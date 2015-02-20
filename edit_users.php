@@ -84,6 +84,17 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 									<INPUT type='text' name='Dir' id='Dir'>
 									</label>
 								</p>
+                                                                <p>
+                                                                        <label>Uid</br>
+                                                                        <INPUT type='text' name='Uid' id='Uid'>
+                                                                        </label>
+                                                                </p>
+                                                                <p>
+                                                                        <label>Gid</br>
+                                                                        <INPUT type='text' name='Gid' id='Gid'>
+                                                                        </label>
+                                                                </p>
+
 								<p>
 									<label>$um_userform_ullimit</br>
 									<INPUT type='text' name='ULBandwidth' id='ULBandwidth'>
@@ -121,6 +132,8 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 						if (isset ($_POST['status'])) {$status = $_POST['status']; if ($status == '') {unset ($status);}}
 						if (isset ($_POST['Password'])) {$Password = $_POST['Password']; if ($Password == '') {unset ($Password);}}
 						if (isset ($_POST['Dir'])) {$Dir = $_POST['Dir']; if ($Dir == '') {unset ($Dir);}}
+						if (isset ($_POST['Uid'])) {$Uid = $_POST['Uid']; if ($Uid == '') {unset ($Uid);}}
+                                                if (isset ($_POST['Gid'])) {$Gid = $_POST['Gid']; if ($Gid == '') {unset ($Gid);}}
 						if (isset ($_POST['ULBandwidth'])) {$ULBandwidth = $_POST['ULBandwidth']; if ($ULBandwidth == '') {unset ($ULBandwidth);}}
 						if (isset ($_POST['DLBandwidth'])) {$DLBandwidth = $_POST['DLBandwidth']; if ($DLBandwidth == '') {unset ($DLBandwidth);}}
 						if (isset ($_POST['ipaccess'])) {$ipaccess = $_POST['ipaccess']; if ($ipaccess == '') {unset ($ipaccess);}}
@@ -142,8 +155,8 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 							$ipaccess = '*';}
 
 						// Если все нужные поля заполнены, добавляем пользователя в базу pureftpd
-						if (isset ($User) && isset($status) && isset($Password) && isset ($Dir) && isset ($DLBandwidth) && isset ($ULBandwidth) && isset ($_POST['ipaccess'])) {
-							$result = mysql_query ("INSERT INTO ftpd (User,status,Password,Dir,ULBandwidth,DLBandwidth,ipaccess) VALUES ('$User','$status',md5('$Password'),'$Dir','$ULBandwidth','$DLBandwidth','$ipaccess')");
+						if (isset ($User) && isset($status) && isset($Password) && isset($Uid) && isset($Gid) && isset ($Dir) && isset ($DLBandwidth) && isset ($ULBandwidth) && isset ($_POST['ipaccess'])) {
+							$result = mysql_query ("INSERT INTO ftpd (User,status,Password,Uid,Gid,Dir,ULBandwidth,DLBandwidth,ipaccess) VALUES ('$User','$status',md5('$Password'),'$Uid','$Gid','$Dir','$ULBandwidth','$DLBandwidth','$ipaccess')");
 							if ($result == 'true') {echo "<p><strong>$um_add_presultok</strong></p>";}
 							else {echo "<p><strong>$um_add_presulterror</strong></p>";}
 						}
@@ -169,6 +182,8 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 						if (isset ($_POST['status'])) {$status = $_POST['status']; if ($status == '') {unset ($status);}}
 						if (isset ($_POST['Password'])) {$Password = $_POST['Password']; if ($Password == '') {unset ($Password);}}
 						if (isset ($_POST['Dir'])) {$Dir = $_POST['Dir']; if ($Dir == '') {unset ($Dir);}}
+                                                if (isset ($_POST['Uid'])) {$Uid = $_POST['Uid']; if ($Uid == '') {unset ($Uid);}}
+                                                if (isset ($_POST['Gid'])) {$Gid = $_POST['Gid']; if ($Gid == '') {unset ($Gid);}}
 						if (isset ($_POST['ULBandwidth'])) {$ULBandwidth = $_POST['ULBandwidth']; if ($ULBandwidth == '') {unset ($ULBandwidth);}}
 						if (isset ($_POST['DLBandwidth'])) {$DLBandwidth = $_POST['DLBandwidth']; if ($DLBandwidth == '') {unset ($DLBandwidth);}}
 						if (isset ($_POST['ipaccess'])) {$ipaccess = $_POST['ipaccess']; if ($ipaccess == '') {unset ($ipaccess);}}
@@ -179,7 +194,21 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 						$array = mysql_fetch_array ($result);
 
 						// Проверяем были ли внесены какие-то изменения
-						if (($Dir != $array[Dir]) || ($User != $array[User]) || ($status != $array[status]) || (isset ($Password)) || ($ULBandwidth != $array[ULBandwidth]) || ($DLBandwidth != $array[DLBandwidth]) || ($ipaccess != $array[ipaccess])) {
+						if (($Dir != $array[Dir]) || ($User != $array[User]) || ($status != $array[status]) || (isset ($Password)) || ($ULBandwidth != $array[ULBandwidth]) || ($DLBandwidth != $array[DLBandwidth]) || ($ipaccess != $array[ipaccess]) || ($Uid != $array['Uid']) || ($Uid != $array['Uid'])) {
+
+							if (($Uid != $array['Uid']) && isset ($id)) {
+                                                                $result = mysql_query ("UPDATE ftpd SET Uid='$Uid' WHERE id='$id'");
+                                                                if ($result == 'true') {echo "<p><strong>$um_edit_uidok</strong></p>";}
+                                                                else {echo "<p><strong>$um_edit_uiderror</strong></p>";}
+
+                                                        }
+							if (($Gid != $array['Gid']) && isset ($id)) {
+                                                                $result = mysql_query ("UPDATE ftpd SET Gid='$Gid' WHERE id='$id'");
+                                                                if ($result == 'true') {echo "<p><strong>$um_edit_folderok</strong></p>";}
+                                                                else {echo "<p><strong>$um_edit_foldererror</strong></p>";}
+
+                                                        }
+
 
 							// Если изменена папка пользователя, вносим изменения в базу
 							if (($Dir != $array[Dir]) && isset ($id)) {
@@ -205,7 +234,7 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 							// Если изменён пароль пользователя, вносим изменения в базу
 							if (isset ($Password)) {$Password = md5($Password);
 								if (($Password != $array[Password]) && isset ($id)) {
-									$result = mysql_query ("UPDATE ftpd SET Password=md5('$Password') WHERE id='$id'");
+									$result = mysql_query ("UPDATE ftpd SET Password='$Password' WHERE id='$id'");
 									if ($result == 'true') {echo "<p><strong>$um_edit_passwdok</strong></p>";}
 									else {echo "<p><strong>$um_edit_passwderror</strong></p>";}}
 							}
@@ -251,6 +280,8 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 									<tr>
 										<th>$um_t_th1</th>
 										<th>$um_t_th2</th>
+										<th>Uid</th>
+										<th>Gid</th>
 										<th>$um_t_th3</th>
 										<th>$um_t_th4</th>
 										<th>$um_t_th5</th>
@@ -264,6 +295,8 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 							printf ("<tr>
 										<td align='center'></a><a href='edit_users.php?id=%s'>%s</a></td>
 										<td align='center'>$myrow[status]</td>
+										<td>$myrow[Uid]</td>
+                                                                                <td>$myrow[Gid]</td>
 										<td>$myrow[Dir]</td>
 										<td align='center'>$myrow[ULBandwidth]</td>
 										<td align='center'>$myrow[DLBandwidth]</td>
@@ -310,6 +343,17 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset='UTF-8'\" /
 									<INPUT value="$myrow[Dir]" type="text" name="Dir" id="Dir">
 									</label>
 								</p>
+								<p>
+                                                                        <label>Uid</br>
+                                                                        <INPUT value="$myrow[Uid]" type='text' name='Uid' id='Uid'>
+                                                                        </label>
+                                                                </p>
+                                                                <p>
+                                                                        <label>Gid</br>
+                                                                        <INPUT value="$myrow[Gid]" type='text' name='Gid' id='Gid'>
+                                                                        </label>
+                                                                </p>
+
 								<p>
 									<label>$um_userform_ullimit</br>
 									<INPUT value="$myrow[ULBandwidth]" type="text" name="ULBandwidth" id="ULBandwidth">
