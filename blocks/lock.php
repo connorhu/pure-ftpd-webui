@@ -31,14 +31,16 @@ else {
            exit();
         }
 
-        $pass =  @mysql_fetch_array($lst);
-        $_SERVER['PHP_AUTH_PW'] = md5($_SERVER['PHP_AUTH_PW']);
-        if ($_SERVER['PHP_AUTH_PW']!= $pass['pass'])
-        {
-            Header ("WWW-Authenticate: Basic realm=\"Pure-FTPd WebUi Admin Page\"");
-           Header ("HTTP/1.0 401 Unauthorized");
-           exit();
-        }
+        if(!$trust_http_auth){
+            $pass =  @mysql_fetch_array($lst);
+            $_SERVER['PHP_AUTH_PW'] = md5($_SERVER['PHP_AUTH_PW']);
+            if ($_SERVER['PHP_AUTH_PW']!= $pass['pass'])
+            {
+                Header ("WWW-Authenticate: Basic realm=\"Pure-FTPd WebUi Admin Page\"");
+               Header ("HTTP/1.0 401 Unauthorized");
+               exit();
+            }
+       }
 
 
 }
