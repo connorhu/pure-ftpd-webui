@@ -1,5 +1,11 @@
 <?php
 include("blocks/db_connect.php");
+if (!isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['HTTP_AUTHORIZATION']))
+  list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
+elseif (!isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['REMOTE_USER']))
+    $_SERVER['PHP_AUTH_USER'] = $_SERVER['REMOTE_USER'];
+elseif (!isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['REDIRECT_REMOTE_USER']))
+    $_SERVER['PHP_AUTH_USER'] = $_SERVER['REDIRECT_REMOTE_USER'];
 if (!isset($_SERVER['PHP_AUTH_USER']))
 
 {
