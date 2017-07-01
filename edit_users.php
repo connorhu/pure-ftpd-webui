@@ -7,16 +7,16 @@ if (isset ($_GET['id'])) {$id = $_GET['id'];}
 $user = $_SERVER['PHP_AUTH_USER'];
 $info = '';
 $get_user_language = FALSE;
-$get_user_language = mysql_query("SELECT language FROM userlist WHERE user='$user';");
+$get_user_language = mysqli_query($link, "SELECT language FROM userlist WHERE user='$user';");
 if (!$get_user_language) {
-	if (($err = mysql_errno()) == 1054) {
+	if (($err = mysqli_errno($link)) == 1054) {
 		$info = "<p align=\"center\" class=\"table_error\">Your version of Pure-FTPd WebUI users table is not currently supported by current version, please upgrade your database to use miltilanguage support.</p>";
 	}
 	$language = "english";
 	include("lang/english.php");
 }
 else {
-	$language_row = mysql_fetch_array ($get_user_language);
+	$language_row = mysqli_fetch_array ($get_user_language);
 	$language = $language_row['language'];
 	if ($language == '') {
 		$language = "english";
@@ -194,7 +194,7 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />"
 
 						// Если все нужные поля заполнены, добавляем пользователя в базу pureftpd
 						if (isset ($User) && isset($status) && isset($Password) && isset($Uid) && isset($Gid) && isset ($Dir) && isset ($DLBandwidth) && isset ($ULBandwidth) && isset ($ipaccess) && isset ($quotasize) && isset ($quotafiles)) {
-							$result = mysql_query ("INSERT INTO ftpd (User,status,Password,Uid,Gid,Dir,ULBandwidth,DLBandwidth,ipaccess,QuotaSize,QuotaFiles) VALUES ('$User','$status',md5('$Password'),'$Uid','$Gid','$Dir','$ULBandwidth','$DLBandwidth','$ipaccess','$quotasize','$quotafiles')");
+							$result = mysqli_query ($link, "INSERT INTO ftpd (User,status,Password,Uid,Gid,Dir,ULBandwidth,DLBandwidth,ipaccess,QuotaSize,QuotaFiles) VALUES ('$User','$status',md5('$Password'),'$Uid','$Gid','$Dir','$ULBandwidth','$DLBandwidth','$ipaccess','$quotasize','$quotafiles')");
 							if ($result == 'true') {echo "<p><strong>$um_add_presultok</strong></p>";}
 							else {echo "<p><strong>$um_add_presulterror</strong></p>";}
 						}
@@ -238,20 +238,20 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />"
 						if (isset ($_POST['id'])) {$id = $_POST['id']; if ($id == '') {unset ($id);}}
 
 						// Запрашиваем из БД настройки пользователя
-						$result = mysql_query ("SELECT * FROM ftpd WHERE id=$id");
-						$array = mysql_fetch_array ($result);
+						$result = mysqli_query ($link, "SELECT * FROM ftpd WHERE id=$id");
+						$array = mysqli_fetch_array ($result);
 
 						// Проверяем были ли внесены какие-то изменения
 						if (($Dir != $array[Dir]) || ($User != $array[User]) || ($status != $array[status]) || (isset ($Password)) || ($ULBandwidth != $array[ULBandwidth]) || ($DLBandwidth != $array[DLBandwidth]) || ($ipaccess != $array[ipaccess]) || ($Uid != $array['Uid']) || ($Uid != $array['Uid']) || ($quotasize != $array[QuotaSize]) || ($quotafiles != $array[QuotaFiles])) {
 
 							if (($Uid != $array['Uid']) && isset ($id)) {
-                                                                $result = mysql_query ("UPDATE ftpd SET Uid='$Uid' WHERE id='$id'");
+                                                                $result = mysqli_query ($link, "UPDATE ftpd SET Uid='$Uid' WHERE id='$id'");
                                                                 if ($result == 'true') {echo "<p><strong>$um_edit_uidok</strong></p>";}
                                                                 else {echo "<p><strong>$um_edit_uiderror</strong></p>";}
 
                                                         }
 							if (($Gid != $array['Gid']) && isset ($id)) {
-                                                                $result = mysql_query ("UPDATE ftpd SET Gid='$Gid' WHERE id='$id'");
+                                                                $result = mysqli_query ($link, "UPDATE ftpd SET Gid='$Gid' WHERE id='$id'");
                                                                 if ($result == 'true') {echo "<p><strong>$um_edit_folderok</strong></p>";}
                                                                 else {echo "<p><strong>$um_edit_foldererror</strong></p>";}
 
@@ -260,21 +260,21 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />"
 
 							// Если изменена папка пользователя, вносим изменения в базу
 							if (($Dir != $array[Dir]) && isset ($id)) {
-								$result = mysql_query ("UPDATE ftpd SET Dir='$Dir' WHERE id='$id'");
+								$result = mysqli_query ($link, "UPDATE ftpd SET Dir='$Dir' WHERE id='$id'");
 								if ($result == 'true') {echo "<p><strong>$um_edit_folderok</strong></p>";}
 								else {echo "<p><strong>$um_edit_foldererror</strong></p>";}
 
 							}
 							// Если изменено имя пользователя, вносим изменения в базу
 							if (($User != $array[User]) && isset ($id)) {
-								$result = mysql_query ("UPDATE ftpd SET User='$User' WHERE id='$id'");
+								$result = mysqli_query ($link, "UPDATE ftpd SET User='$User' WHERE id='$id'");
 								if ($result == 'true') {echo "<p><strong>$um_edit_loginok</strong></p>";}
 								else {echo "<p><strong>$um_edit_loginerror</strong></p>";}
 							}
 
 							// Если изменён статус пользователя, вносим изменения в базу
 							if (($status != $array[status]) && isset ($id)) {
-								$result = mysql_query ("UPDATE ftpd SET status='$status' WHERE id='$id'");
+								$result = mysqli_query ($link, "UPDATE ftpd SET status='$status' WHERE id='$id'");
 								if ($result == 'true') {echo "<p><strong>$um_edit_statusok</strong></p>";}
 								else {echo "<p><strong>$um_edit_statuserror</strong></p>";}
 							}
@@ -282,33 +282,33 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />"
 							// Если изменён пароль пользователя, вносим изменения в базу
 							if (isset ($Password)) {$Password = md5($Password);
 								if (($Password != $array[Password]) && isset ($id)) {
-									$result = mysql_query ("UPDATE ftpd SET Password='$Password' WHERE id='$id'");
+									$result = mysqli_query ($link, "UPDATE ftpd SET Password='$Password' WHERE id='$id'");
 									if ($result == 'true') {echo "<p><strong>$um_edit_passwdok</strong></p>";}
 									else {echo "<p><strong>$um_edit_passwderror</strong></p>";}}
 							}
 
 							// Если изменено ограничение скорости загрузки, вносим изменения в базу
 							if (($ULBandwidth != $array[ULBandwidth]) && isset ($id)) {
-								$result = mysql_query ("UPDATE ftpd SET ULBandwidth='$ULBandwidth' WHERE id='$id'");
+								$result = mysqli_query ($link, "UPDATE ftpd SET ULBandwidth='$ULBandwidth' WHERE id='$id'");
 								if ($result == 'true') {echo "<p><strong>$um_edit_ullimitok</strong></p>";}
 								else {echo "<p><strong>$um_edit_ullimiterror</strong></p>";}
 							}
 
 							// Если изменено ограничение скорости скачивания, вносим изменения в базу
 							if (($DLBandwidth != $array[DLBandwidth]) && isset ($id)) {
-								$result = mysql_query ("UPDATE ftpd SET DLBandwidth='$DLBandwidth' WHERE id='$id'");
+								$result = mysqli_query ($link, "UPDATE ftpd SET DLBandwidth='$DLBandwidth' WHERE id='$id'");
 								if ($result == 'true') {echo "<p><strong>$um_edit_dllimitok</strong></p>";}
 								else {echo "<p><strong>$um_edit_dllimiterror</strong></p>";}
 							}
 							// Если изменён разрешенный IP адрес, вносим изменения в базу
 							if (($ipaccess != $array[ipaccess]) && isset ($id)) {
-								$result = mysql_query ("UPDATE ftpd SET ipaccess='$ipaccess' WHERE id='$id'");
+								$result = mysqli_query ($link, "UPDATE ftpd SET ipaccess='$ipaccess' WHERE id='$id'");
 								if ($result == 'true') {echo "<p><strong>$um_edit_permipok</strong></p>";}
 								else {echo "<p><strong>$um_edit_permiperror</strong></p>";}
 							}
 							// Если изменён размер квоты, вносим изменения в базу
 							if (($quotasize != $array[QuotaSize]) && isset ($id)) {
-								$result = mysql_query ("UPDATE ftpd SET QuotaSize='$quotasize' WHERE id='$id'");
+								$result = mysqli_query ($link, "UPDATE ftpd SET QuotaSize='$quotasize' WHERE id='$id'");
 								if ($result == 'true') {
 									echo "<p><strong>$um_edit_quotasizeok</strong></p>";
 							}
@@ -316,7 +316,7 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />"
 							}
 							// Если изменён размер квоты, вносим изменения в базу
 							if (($quotafiles != $array[QuotaFiles]) && isset ($id)) {
-								$result = mysql_query ("UPDATE ftpd SET QuotaFiles='$quotafiles' WHERE id='$id'");
+								$result = mysqli_query ($link, "UPDATE ftpd SET QuotaFiles='$quotafiles' WHERE id='$id'");
 								if ($result == 'true') {
 									echo "<p><strong>$um_edit_quotafilesok</strong></p>";
 							}
@@ -355,8 +355,8 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />"
 										<th>$um_t_th8</th>
 									</tr>
 								</thead><tbody>");
-						$result = mysql_query ("SELECT * FROM ftpd");
-						$myrow = mysql_fetch_array ($result);
+						$result = mysqli_query ($link, "SELECT * FROM ftpd");
+						$myrow = mysqli_fetch_array ($result);
 						do {
 							// Выводим список пользователей
 							printf ("<tr>
@@ -372,7 +372,7 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />"
 										<td align='center'>$myrow[QuotaFiles]</td>
 									</tr>",$myrow ["id"],$myrow ["User"]);
 						}
-					while ($myrow = mysql_fetch_array ($result));
+					while ($myrow = mysqli_fetch_array ($result));
 
 						echo("	</tbody></table>");
 											
@@ -388,8 +388,8 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />"
 					}
 					// Эта часть используется, если выбран пользователь для редактирования
 					else {
-						$result = mysql_query ("SELECT * FROM ftpd WHERE id=$id");
-						$myrow = mysql_fetch_array ($result);
+						$result = mysqli_query ($link, "SELECT * FROM ftpd WHERE id=$id");
+						$myrow = mysqli_fetch_array ($result);
 						if ($myrow[status] == 0) {
 							$select = "<option value='0' selected='selected'>inactive</option><option value='1'>active</option>";
 						}
