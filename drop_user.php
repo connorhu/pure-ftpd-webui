@@ -1,26 +1,27 @@
 <?php
 $master = "del_user.php";
-include ("blocks/lock.php");
-include ("blocks/db_connect.php"); /*Подключаемся к базе*/
-if (isset ($_POST['id'])) {$id = $_POST['id'];}
+include("blocks/lock.php");
+include("blocks/db_connect.php"); /*Подключаемся к базе*/
+if (isset($_POST['id'])) {
+    $id = $_POST['id'];
+}
 $user = $_SERVER['PHP_AUTH_USER'];
 $info = '';
-$get_user_language = FALSE;
+$get_user_language = false;
 $get_user_language = mysqli_query($link, "SELECT language FROM userlist WHERE user='$user';");
 if (!$get_user_language) {
-	if (($err = mysqli_errno($link)) == 1054) {
-		$info = "<p align=\"center\" class=\"table_error\">Your version of Pure-FTPd WebUI users table is not currently supported by current version, please upgrade your database to use miltilanguage support.</p>";
-	}
-	$language = "english";
-	include("lang/english.php");
-}
-else {
-	$language_row = mysqli_fetch_array ($get_user_language);
-	$language = $language_row['language'];
-	if ($language == '') {
-		$language = "english";
-	}
-	include("lang/$language.php");
+    if (($err = mysqli_errno($link)) == 1054) {
+        $info = "<p align=\"center\" class=\"table_error\">Your version of Pure-FTPd WebUI users table is not currently supported by current version, please upgrade your database to use miltilanguage support.</p>";
+    }
+    $language = "english";
+    include("lang/english.php");
+} else {
+    $language_row = mysqli_fetch_array($get_user_language);
+    $language = $language_row['language'];
+    if ($language == '') {
+        $language = "english";
+    }
+    include("lang/$language.php");
 }
 
 echo("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"");
@@ -48,17 +49,17 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />"
     </tr>
 </table></br><?php echo("$info"); ?></br>
                 <?php
-                if (isset ($id))
-                  {
-                  /*Удаляем пользователя из базы*/
-                  $result = mysqli_query ($link, "DELETE FROM ftpd WHERE id='$id'");
-                  if ($result == 'true') {echo "<p>$du_success<p>";}
-                  else {echo "<p>$du_error</p>";}
-                  }
-                else
-                  {
-                  echo "<p>$du_notchecked</p>";
-                  }
+                if (isset($id)) {
+                    /*Удаляем пользователя из базы*/
+                    $result = mysqli_query($link, "DELETE FROM ftpd WHERE id='$id'");
+                    if ($result == 'true') {
+                        echo "<p>$du_success<p>";
+                    } else {
+                        echo "<p>$du_error</p>";
+                    }
+                } else {
+                    echo "<p>$du_notchecked</p>";
+                }
                 ?></br></br>
                </td>
             </tr>

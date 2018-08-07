@@ -1,25 +1,24 @@
 <?php
 $master = "del_user.php";
-include ("blocks/lock.php");
-include ("blocks/db_connect.php"); /*Подлкючаемся к базе*/
+include("blocks/lock.php");
+include("blocks/db_connect.php"); /*Подлкючаемся к базе*/
 $user = $_SERVER['PHP_AUTH_USER'];
 $info = '';
-$get_user_language = FALSE;
+$get_user_language = false;
 $get_user_language = mysqli_query($link, "SELECT language FROM userlist WHERE user='$user';");
 if (!$get_user_language) {
-	if (($err = mysqli_errno($link)) == 1054) {
-		$info = "<p align=\"center\" class=\"table_error\">Your version of Pure-FTPd WebUI users table is not currently supported by current version, please upgrade your database to use miltilanguage support.</p>";
-	}
-	$language = "english";
-	include("lang/english.php");
-}
-else {
-	$language_row = mysqli_fetch_array ($get_user_language);
-	$language = $language_row['language'];
-	if ($language == '') {
-		$language = "english";
-	}
-	include("lang/$language.php");
+    if (($err = mysqli_errno($link)) == 1054) {
+        $info = "<p align=\"center\" class=\"table_error\">Your version of Pure-FTPd WebUI users table is not currently supported by current version, please upgrade your database to use miltilanguage support.</p>";
+    }
+    $language = "english";
+    include("lang/english.php");
+} else {
+    $language_row = mysqli_fetch_array($get_user_language);
+    $language = $language_row['language'];
+    if ($language == '') {
+        $language = "english";
+    }
+    include("lang/$language.php");
 }
 
 echo("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"");
@@ -51,13 +50,11 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />"
 				<?php echo("<p class=\"text_title\">$del_selecttitle</p>"); ?>
                  <form action="drop_user.php" method="post">
                  <?php
-                   $result = mysqli_query ($link, "SELECT User,id FROM ftpd");
-                   $myrow = mysqli_fetch_array ($result);
-                   do
-                    {
-                    printf ("<p><input name='id' type='radio' value='%s'><label> %s</label></p>", $myrow["id"], $myrow["User"]);
-                    }
-                   while ($myrow = mysqli_fetch_array ($result));
+                   $result = mysqli_query($link, "SELECT User,id FROM ftpd");
+                   $myrow = mysqli_fetch_array($result);
+                   do {
+                       printf("<p><input name='id' type='radio' value='%s'><label> %s</label></p>", $myrow["id"], $myrow["User"]);
+                   } while ($myrow = mysqli_fetch_array($result));
                   ?>
 				<?php echo("<p><input name=\"submit\" type=\"submit\" value=\"$del_button\"></p>"); ?>
                   </form></br></br>

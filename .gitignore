@@ -1,3 +1,8 @@
 /.project
 /.settings
 /.buildpath
+._*
+vendor
+var/cache
+.php_cs
+.php_cs.cache

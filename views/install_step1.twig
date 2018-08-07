@@ -1,0 +1,21 @@
+{% extends 'install_base.twig' %}
+
+{% block content %}
+
+                    <p align="center" class="text_title" >Welcome to </br> Pure-FTPd WebUI {{ version }} installer</p>
+
+                    <form name="1" method="post" action="/install.php?step=1">
+                        <p align="center">
+                            <label>
+                                <input type="submit" name="install" id="install" value="Install">
+                            </label>
+                        </p>
+                    </form>
+    
+                    <tr valign="bottom">
+                        <td>
+                            <p class="link"><a href="http://pure-ftpd-webui.org/projects/pure-ftpd-webui/wiki">Pure-FTPd WebUI Wiki</a></p>
+                        </td>
+                    </tr>
+
+{% endblock %}

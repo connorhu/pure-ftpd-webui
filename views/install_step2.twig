@@ -1,0 +1,24 @@
+{% extends 'install_base.twig' %}
+
+{% block content %}
+    <form name="3" method="post" action="install.php?step=2">
+        <tr>
+            <td align="right" width="10%">
+                <p align="left" class="text_title" >To create Pure-FTPd WebUI administrator</br>fill in the following fields</p>
+                <p align="left">
+                    	                            
+                    <label>Pure-FTPd WebUI administrator login</br>
+                        <input type="text" name="webui_admin" id="webui_admin" required="required"></br>
+                    </label>
+
+                    <label>Pure-FTPd WebUI administrator password</br>
+                        <input type="password" name="webui_admin_passwd" id="webui_admin_passwd" required="required"></br>
+                    </label>
+                    <label>
+                        <input type="submit" name="add_webui_admin" id="add_webui_admin" value="next">
+                    </label>
+                </p>
+            </td>
+        </tr>
+    </form>
+    {% endblock %}

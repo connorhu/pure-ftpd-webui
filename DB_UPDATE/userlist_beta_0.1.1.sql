@@ -1,1 +1,0 @@
-ALTER TABLE userlist ADD `language` varchar(50) COLLATE utf8_bin DEFAULT NULL;

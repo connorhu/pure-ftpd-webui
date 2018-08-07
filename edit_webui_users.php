@@ -1,25 +1,24 @@
 <?php
 $master = "webui_users.php";
-include ("blocks/lock.php");
-include ("blocks/db_connect.php"); /*Подлкючаемся к базе*/
+include("blocks/lock.php");
+include("blocks/db_connect.php"); /*Подлкючаемся к базе*/
 $user = $_SERVER['PHP_AUTH_USER'];
 $info = '';
-$get_user_language = FALSE;
+$get_user_language = false;
 $get_user_language = mysqli_query($link, "SELECT language FROM userlist WHERE user='$user';");
 if (!$get_user_language) {
-	if (($err = mysqli_errno($link)) == 1054) {
-		$info = "<p align=\"center\" class=\"table_error\">Your version of Pure-FTPd WebUI users table is not currently supported by current version, please upgrade your database to use miltilanguage support.</p>";
-	}
-	$language = "english";
-	include("lang/english.php");
-}
-else {
-	$language_row = mysqli_fetch_array ($get_user_language);
-	$language = $language_row['language'];
-	if ($language == '') {
-		$language = "english";
-	}
-	include("lang/$language.php");
+    if (($err = mysqli_errno($link)) == 1054) {
+        $info = "<p align=\"center\" class=\"table_error\">Your version of Pure-FTPd WebUI users table is not currently supported by current version, please upgrade your database to use miltilanguage support.</p>";
+    }
+    $language = "english";
+    include("lang/english.php");
+} else {
+    $language_row = mysqli_fetch_array($get_user_language);
+    $language = $language_row['language'];
+    if ($language == '') {
+        $language = "english";
+    }
+    include("lang/$language.php");
 }
 
 echo("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"");
@@ -49,11 +48,11 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />"
     </tr>
 </table></br><?php echo("$info"); ?></br>
 				<?php
-					if (isset ($_POST['id']) && !isset($_POST['edit']) && !isset($_POST['delete'])) {
-						$id = $_POST['id'];
-                 		$result = mysqli_query ($link, "SELECT * FROM userlist WHERE id=$id");
-						$myrow = mysqli_fetch_array ($result);
-						echo("
+                    if (isset($_POST['id']) && !isset($_POST['edit']) && !isset($_POST['delete'])) {
+                        $id = $_POST['id'];
+                        $result = mysqli_query($link, "SELECT * FROM userlist WHERE id=$id");
+                        $myrow = mysqli_fetch_array($result);
+                        echo("
 							<form name=\"form1\" method=\"post\" action=\"$PHP_SELF\">
 								<p>
 									<label>$ewu_form_login</br>
@@ -68,14 +67,14 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />"
 								<p>
 									<label>$ewu_form_lang</br>
 									<select name=\"language\">");
-									$directory = "lang/";
-									$languages = glob("" . $directory . "*.php");
-									foreach($languages as $lang) {
-										$rest = substr($lang, 5);
-										$lng = substr($rest, 0, -4);
-										echo("<option>$lng</option>");
-									}
-									echo("</label>
+                        $directory = "lang/";
+                        $languages = glob("" . $directory . "*.php");
+                        foreach ($languages as $lang) {
+                            $rest = substr($lang, 5);
+                            $lng = substr($rest, 0, -4);
+                            echo("<option>$lng</option>");
+                        }
+                        echo("</label>
 									</select>
 								</p>
 								<p>
@@ -83,40 +82,69 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />"
 								</p>
 								<INPUT type=\"hidden\" name=\"id\" value=\"$id\">
 							</form>");
-					}
-					elseif ($_POST['edit']) {
-						if (isset ($_POST['id'])) {$id = $_POST['id']; if ($id == '') {unset ($id);}}
-						if (isset ($_POST['user'])) {$user = $_POST['user']; if ($user == '') {unset ($user);}}
-						if (isset ($_POST['pass'])) {$pass = $_POST['pass']; if ($pass == '') {unset ($pass);}}
-						if (isset ($_POST['language'])) {$language = $_POST['language']; if ($language == '') {unset ($language);}}
-						$result = mysqli_query ($link, "SELECT * FROM userlist WHERE id=$id");
-						$array = mysqli_fetch_array ($result);
-						// Проверяем были ли внесены какие-то изменения
-						if (($user != $array[user]) || (isset ($pass)) || ($language != $array[language])) {
-							// Если изменено имя пользователя, вносим изменения в базу
-							if (($user != $array[user]) && isset ($id)) {
-								$result = mysqli_query ($link, "UPDATE userlist SET user='$user' WHERE id='$id'");
-								if ($result == 'true') {echo "<p><strong>$ewu_edit_loginok</strong></p>";}
-								else {echo "<p><strong>$ewu_edit_loginerror</strong></p>";}
-							}
-							// Если изменен пароль пользователя, вносим изменения в базу
-							if (isset ($pass)) { 
-								$pass = md5($pass);
-								if (($pass != $array[pass]) && isset ($id)) {
-									$result = mysqli_query ($link, "UPDATE userlist SET pass='$pass' WHERE id='$id'");
-									if ($result == 'true') {echo "<p><strong>$ewu_edit_passwdok</strong></p>";}
-									else {echo "<p><strong>$ewu_edit_passwderror</strong></p>";}
-								}
-							}
-							// Если изменён язык пользователя, вносим изменения в базу
-							if (($language != $array[language]) && isset ($id)) {
-								$result = mysqli_query ($link, "UPDATE userlist SET language='$language' WHERE id='$id'");
-								if ($result == 'true') {echo "<p><strong>$ewu_edit_languageok</strong></p>";}
-								else {echo "<p><strong>$ewu_edit_languageerror</strong></p>";}
-							}
-						}
-						else {echo"<p><strong>$um_edit_nochanges</strong></p>";}
-						echo"</br>
+                    } elseif ($_POST['edit']) {
+                        if (isset($_POST['id'])) {
+                            $id = $_POST['id'];
+                            if ($id == '') {
+                                unset($id);
+                            }
+                        }
+                        if (isset($_POST['user'])) {
+                            $user = $_POST['user'];
+                            if ($user == '') {
+                                unset($user);
+                            }
+                        }
+                        if (isset($_POST['pass'])) {
+                            $pass = $_POST['pass'];
+                            if ($pass == '') {
+                                unset($pass);
+                            }
+                        }
+                        if (isset($_POST['language'])) {
+                            $language = $_POST['language'];
+                            if ($language == '') {
+                                unset($language);
+                            }
+                        }
+                        $result = mysqli_query($link, "SELECT * FROM userlist WHERE id=$id");
+                        $array = mysqli_fetch_array($result);
+                        // Проверяем были ли внесены какие-то изменения
+                        if (($user != $array[user]) || (isset($pass)) || ($language != $array[language])) {
+                            // Если изменено имя пользователя, вносим изменения в базу
+                            if (($user != $array[user]) && isset($id)) {
+                                $result = mysqli_query($link, "UPDATE userlist SET user='$user' WHERE id='$id'");
+                                if ($result == 'true') {
+                                    echo "<p><strong>$ewu_edit_loginok</strong></p>";
+                                } else {
+                                    echo "<p><strong>$ewu_edit_loginerror</strong></p>";
+                                }
+                            }
+                            // Если изменен пароль пользователя, вносим изменения в базу
+                            if (isset($pass)) {
+                                $pass = md5($pass);
+                                if (($pass != $array[pass]) && isset($id)) {
+                                    $result = mysqli_query($link, "UPDATE userlist SET pass='$pass' WHERE id='$id'");
+                                    if ($result == 'true') {
+                                        echo "<p><strong>$ewu_edit_passwdok</strong></p>";
+                                    } else {
+                                        echo "<p><strong>$ewu_edit_passwderror</strong></p>";
+                                    }
+                                }
+                            }
+                            // Если изменён язык пользователя, вносим изменения в базу
+                            if (($language != $array[language]) && isset($id)) {
+                                $result = mysqli_query($link, "UPDATE userlist SET language='$language' WHERE id='$id'");
+                                if ($result == 'true') {
+                                    echo "<p><strong>$ewu_edit_languageok</strong></p>";
+                                } else {
+                                    echo "<p><strong>$ewu_edit_languageerror</strong></p>";
+                                }
+                            }
+                        } else {
+                            echo"<p><strong>$um_edit_nochanges</strong></p>";
+                        }
+                        echo"</br>
 								<form name='to_list' action='webui_users.php'>
 									<p>
 										<label>
@@ -124,19 +152,20 @@ echo("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />"
 										</label>
 									</p>
 								</form>";
-					}
-					elseif ($_POST['delete']) {
-						if (isset ($_POST['id'])) {
-							$id = $_POST['id'];
-							$result = mysqli_query ($link, "DELETE FROM userlist WHERE id='$id'");
-							if ($result == 'true') {echo "<p>$ewu_del_resultok<p>";}
-							else {echo "<p>$ewu_del_resulterror</p>";}
-						}
-						else {
-							echo "<p>$ewu_del_notchecked</p>";
-						}
-					}
-				?>
+                    } elseif ($_POST['delete']) {
+                        if (isset($_POST['id'])) {
+                            $id = $_POST['id'];
+                            $result = mysqli_query($link, "DELETE FROM userlist WHERE id='$id'");
+                            if ($result == 'true') {
+                                echo "<p>$ewu_del_resultok<p>";
+                            } else {
+                                echo "<p>$ewu_del_resulterror</p>";
+                            }
+                        } else {
+                            echo "<p>$ewu_del_notchecked</p>";
+                        }
+                    }
+                ?>
                   </br></br>
                </td>
             </tr>

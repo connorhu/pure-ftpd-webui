@@ -1,0 +1,91 @@
+{% extends 'base.twig' %}
+
+
+{% block content %}
+    
+    <p class='text_title' align='center'><strong>{{ trans.um_t_title }}</strong></p>
+    <div id='container'>
+        <FORM name="form1" method="post" action="{{ user.id is defined ? '/edit_user.php?id='~ user.id : '/add_user.php' }}">
+            <p>
+                <label>
+                    {{ trans.um_userform_login }}<br>
+                    <input value="{{ user.User is defined ? user.User : '' }}" type="text" name="User" id="User" required="required">
+                </label>
+            </p>
+            <p>
+                <label>{{ trans.um_userform_status }}<br>
+                    <select name="status">
+                        <option value="0"
+                        {%- if user.status is defined and user.status == 0 %}
+                            {{- ' selected="selected"' }}
+                        {%- endif %}>inactive</option>
+                        <option value="1"
+                        {%- if user.status is defined and user.status == 1 %}
+                            {{- ' selected="selected"' }}
+                        {%- endif %}>active</option>
+                    </select>
+                </label>
+			</p>
+			<p>
+				<label>{{ trans.um_userform_pwd }}<br>
+				<INPUT value="" type="password" name="Password" id="Password" required="required">
+				</label>
+			</p>
+			<p>
+				<label>{{ trans.um_userform_folder|nl2br }}<br>
+				<INPUT value="{{ user.Dir is defined ? user.Dir : '' }}" type="text" name="Dir" id="Dir">
+				</label>
+			</p>
+            <p>
+                <label>
+                    Uid<br>
+                    <INPUT value="{{ user.Uid is defined ? user.Uid : '' }}" type='text' name='Uid' id='Uid'>
+                </label>
+            </p>
+            <p>
+                <label>
+                    Gid<br>
+                    <INPUT value="{{ user.Gid is defined ? user.Gid : '' }}" type='text' name='Gid' id='Gid'>
+                </label>
+            </p>
+			<p>
+				<label>{{ trans.um_userform_ullimit|nl2br }}<br>
+				<INPUT value="{{ user.ULBandwidth is defined ? user.ULBandwidth : '' }}" type="text" name="ULBandwidth" id="ULBandwidth">
+				</label>
+			</p>
+			<p>
+				<label>{{ trans.um_userform_dllimit|nl2br }}<br>
+				<INPUT value="{{ user.DLBandwidth is defined ? user.DLBandwidth : '' }}" type="text" name="DLBandwidth" id="DLBandwidth">
+				</label>
+			</p>
+			<p>
+				<labe>{{ trans.um_userform_permip|nl2br }}<br>
+				<INPUT value="{{ user.ipaccess is defined ? user.ipaccess : '' }}" type="text" name="ipaccess" id="ipaccess">
+				</label>
+			</p>
+			<p>
+				<labe>{{ trans.um_userform_quotasize|nl2br }}<br>
+				<INPUT value="{{ user.QuotaSize is defined ? user.QuotaSize : '' }}" type="text" name="quotasize" id="quotasize">
+				</label>
+			</p>
+			<p>
+				<labe>{{ trans.um_userform_quotafiles|nl2br }}<br>
+				<INPUT value="{{ user.QuotaFiles is defined ? user.QuotaFiles : '' }}" type="text" name="quotafiles" id="quotafiles">
+				</label>
+			</p><br>
+				<INPUT name="id" type="hidden" value="{{ user.id is defined ? user.id : '' }}">
+			<p>
+				<label>
+				<INPUT type="submit" name="edit" id="edit" value="{{ trans.um_edit_savebutton }}">
+				</label>
+			</p>
+			<p>
+				<label>
+				<INPUT type="submit" name="users" id="users" value="{{ trans.um_edit_backbutton }}">
+				</label>
+			</p>
+		</FORM>
+    </div>
+
+{% endblock %}
+
