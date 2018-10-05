@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+
+{% block content %}
+
+    <h2>User management</h2>
+    
+    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+        <div class="btn-group mr-2" role="group" aria-label="First group">
+            <a class="btn btn-secondary" href="/add_user.php">{{ 'users.add_user'|trans }}</a>
+        </div>
+    </div>
+    
+    <table class="table table-striped mt-3">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">{{ 'users.field_login'|trans }}</th>
+                <th scope="col">{{ 'users.field_status'|trans }}</th>
+                <th scope="col">{{ 'users.field_uid'|trans }}</th>
+                <th scope="col">{{ 'users.field_gid'|trans }}</th>
+                <th scope="col">{{ 'users.field_upload_directory'|trans }}</th>
+                <th scope="col">{{ 'users.field_upload_bandwidth'|trans }}</th>
+                <th scope="col">{{ 'users.field_download_bandwidth'|trans }}</th>
+                <th scope="col">{{ 'users.field_ipaccess'|trans }}</th>
+                <th scope="col">{{ 'users.field_quota_size'|trans }}</th>
+                <th scope="col">{{ 'users.field_quota_files'|trans }}</th>
+            </tr>
+
+        </thead>
+        <tbody>
+            {% for row in users %}
+                <tr>
+                    <td><a href="{{ url('edit_user', {user: row.id}) }}">{{ row.login }}</a></td>
+                    <td>{{ row.active }}</td>
+                    <td>{{ row.uid }}</td>
+                    <td>{{ row.gid }}</td>
+                    <td>{{ row.uploadDirectory }}</td>
+                    <td>{{ row.uploadBandwidth }}</td>
+                    <td>{{ row.downloadBandwidth }}</td>
+                    <td>{{ row.ipaccess }}</td>
+                    <td>{{ row.quotaSize }}</td>
+                    <td>{{ row.quotaFiles }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

@@ -1,0 +1,8 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+    globals:
+        version: '0.4.0'
+    form_themes:
+        - 'bootstrap_4_layout.html.twig'

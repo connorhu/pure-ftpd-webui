@@ -1,0 +1,19 @@
+dashboard:
+   path: /
+   controller: App\Controller\DefaultController::dashboard
+
+users:
+   path: /users
+   controller: App\Controller\UserController::list
+
+edit_user:
+   path: /user/{user}/edit
+   controller: App\Controller\UserController::edit
+
+login:
+   path: /login
+   controller: App\Controller\SecurityController::login
+
+logout:
+   path: /logout
+   controller: App\Controller\SecurityController::logout

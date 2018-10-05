@@ -1,0 +1,22 @@
+
+menu:
+    active_users: Active users
+    user_management: User management
+    daemon: Pure-FTPd management
+    settings: Settings
+    webuictl: Pure-FTPd WebUI users
+
+users:
+    add_user: Add new user
+    
+    field_login: Login
+    field_status: Status
+    field_uid: UID
+    field_gid: GID
+    field_upload_directory: Upload Root
+    field_upload_bandwidth: UL Bandwidth
+    field_download_bandwidth: DL Bandwidth
+    field_ipaccess: Permitted IP
+    field_quota_size: Quota Size
+    field_quota_files: Quota Files
+

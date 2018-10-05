@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}PureFTPd WebUI{% endblock %}</title>
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('static/app.css') }}">
+        {% endblock %}
+    </head>
+    <body>
+        {% block body %}
+            
+            {% macro tab(filename, tabname, current_tab, label) %}
+                <li class="nav-item{{ (tabname == current_tab) ? ' active' : '' }}">
+                    <a class="nav-link" href="{{ filename }}">{{ label }}</a>
+                </li>
+            {% endmacro %}
+    
+            {% import _self as menu %}
+    
+            <nav class="navbar navbar-expand-md navbar-light bg-light">
+                <div class="container">
+                    <a class="navbar-brand" href="#">Pure-FTPd WebUI</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+                        <ul class="navbar-nav mr-auto">
+                            {% if not tab is defined %}
+                                {% set tab = '' %}
+                            {% endif %}
+                            
+                            {{ menu.tab('index.php', 'main', tab, 'menu.active_users'|trans) }}
+                            {{ menu.tab(url('users'), 'edit_users', tab, 'menu.user_management'|trans) }}
+                            {{ menu.tab('edit_settings.php', 'edit_settings', tab, 'menu.settings'|trans) }}
+                            {{ menu.tab('webui_users.php', 'webui_users', tab, 'menu.webuictl'|trans) }}
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+    
+            <div class="container">
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }}" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+
+                {% block content %}{% endblock %}
+
+                <footer class="pt-4 my-md-5 pt-md-5 border-top">
+                    <div class="row">
+                        <div class="col-12 col-md">
+                            <a href="http://pure-ftpd-webui.org/">Pure-FTPd WebUI</a> {{ version }} © 2010-2012 Yevgeniy Valeyev
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        
+        {% endblock %}
+        {% block javascripts %}
+            <script src="{{ asset('static/app.js') }}"></script>
+        {% endblock %}
+    </body>
+</html>
