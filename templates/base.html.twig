@@ -20,7 +20,7 @@
     
             <nav class="navbar navbar-expand-md navbar-light bg-light">
                 <div class="container">
-                    <a class="navbar-brand" href="#">Pure-FTPd WebUI</a>
+                    <a class="navbar-brand" href="{{ url('dashboard') }}">Pure-FTPd WebUI</a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -31,10 +31,9 @@
                                 {% set tab = '' %}
                             {% endif %}
                             
-                            {{ menu.tab('index.php', 'main', tab, 'menu.active_users'|trans) }}
                             {{ menu.tab(url('users'), 'edit_users', tab, 'menu.user_management'|trans) }}
+                            {{ menu.tab(url('admin_users'), 'webui_users', tab, 'menu.webuictl'|trans) }}
                             {{ menu.tab('edit_settings.php', 'edit_settings', tab, 'menu.settings'|trans) }}
-                            {{ menu.tab('webui_users.php', 'webui_users', tab, 'menu.webuictl'|trans) }}
                         </ul>
                     </div>
                 </div>

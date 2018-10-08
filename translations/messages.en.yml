@@ -20,3 +20,6 @@ users:
     field_quota_size: Quota Size
     field_quota_files: Quota Files
 
+admin_users:
+    field_username: Username
+    field_language: Chosen language of the interface

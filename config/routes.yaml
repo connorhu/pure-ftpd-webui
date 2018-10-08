@@ -10,6 +10,18 @@ edit_user:
    path: /user/{user}/edit
    controller: App\Controller\UserController::edit
 
+admin_users:
+   path: /admin_users
+   controller: App\Controller\AdminUserController::list
+
+new_admin_user:
+   path: /admin_user/new
+   controller: App\Controller\AdminUserController::new
+
+edit_admin_user:
+   path: /admin_user/{user}/edit
+   controller: App\Controller\AdminUserController::edit
+
 login:
    path: /login
    controller: App\Controller\SecurityController::login
