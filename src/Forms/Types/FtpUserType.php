@@ -4,7 +4,7 @@ namespace App\Forms\Types;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type as CoreFormTypes;
 
 class FtpUserType extends AbstractType
 {
@@ -14,6 +14,17 @@ class FtpUserType extends AbstractType
             ->add('login', null, [
                 'required' => false,
                 'label' => 'Login',
+            ])
+            ->add('password', CoreFormTypes\RepeatedType::class, [
+                'required' => false,
+                'label' => 'Password',
+                'type' => CoreFormTypes\PasswordType::class,
+                'first_options' => [
+                    'label' => 'Password',
+                ],
+                'second_options' => [
+                    'label' => 'Repeated Password',
+                ],
             ])
             ->add('active', null, [
                 'required' => false,
@@ -55,7 +66,7 @@ class FtpUserType extends AbstractType
                 'required' => false,
                 'label' => 'Comment',
             ])
-            ->add('save', SubmitType::class)
+            ->add('save', CoreFormTypes\SubmitType::class)
         ;
     }
 }

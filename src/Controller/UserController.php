@@ -26,6 +26,8 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $isNew = $user->getId() === null;
             
+            $user->setPassword(md5($form['password']->getData()));
+            
             $em = $this->getDoctrine()->getManager();
             
             if ($isNew) {
@@ -36,7 +38,7 @@ class UserController extends AbstractController
             
             $this->addFlash('success', $isNew ? 'User created!' : 'User\'s data updated!');
             
-            return $this->redirectToRoute('admin_users');
+            return $this->redirectToRoute('users');
         }
         
         return $this->render('users/edit.html.twig', [
