@@ -14,12 +14,12 @@
         "symfony/security-bundle": "*",
         "symfony/translation": "*",
         "symfony/twig-bundle": "*",
+        "symfony/validator": "4.2.*",
         "symfony/webpack-encore-pack": "^1.0",
         "symfony/yaml": "*"
     },
     "require-dev": {
         "symfony/dotenv": "*",
-        "symfony/monolog-bundle": "^3.3",
         "symfony/profiler-pack": "^1.0",
         "symfony/var-dumper": "*"
     },

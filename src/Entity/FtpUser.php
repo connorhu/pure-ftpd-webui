@@ -3,10 +3,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity()
  * @ORM\Table(name="ftpd")
+ * @UniqueEntity("login")
  */
 class FtpUser
 {
@@ -30,6 +33,7 @@ class FtpUser
     /**
      * @var string
      * @ORM\Column(name="User", type="string", length=16, nullable=false)
+     * @Assert\NotBlank
      */
     protected $login;
     
@@ -175,6 +179,7 @@ class FtpUser
     /**
      * @var string
      * @ORM\Column(name="Dir", type="string", length=128, nullable=true)
+     * @Assert\NotBlank
      */
     protected $uploadDirectory;
     
@@ -204,7 +209,7 @@ class FtpUser
      * @var integer
      * @ORM\Column(name="ULBandwidth", type="integer", nullable=true)
      */
-    protected $uploadBandwidth;
+    protected $uploadBandwidth = 0;
     
     /**
      * setter for uploadBandwidth
@@ -232,7 +237,7 @@ class FtpUser
      * @var integer
      * @ORM\Column(name="DLBandwidth", type="integer", nullable=true)
      */
-    protected $downloadBandwidth;
+    protected $downloadBandwidth = 0;
     
     /**
      * setter for downloadBandwidth
@@ -260,7 +265,7 @@ class FtpUser
      * @var string
      * @ORM\Column(name="ipaccess", type="string", length=10, nullable=true)
      */
-    protected $ipaccess;
+    protected $ipaccess = '*';
     
     /**
      * setter for ipaccess
@@ -288,7 +293,7 @@ class FtpUser
      * @var integer
      * @ORM\Column(name="QuotaSize", type="integer", nullable=true)
      */
-    protected $quotaSize;
+    protected $quotaSize = 0;
     
     /**
      * setter for quotaSize
@@ -316,7 +321,7 @@ class FtpUser
      * @var integer
      * @ORM\Column(name="QuotaFiles", type="integer", nullable=true)
      */
-    protected $quotaFiles;
+    protected $quotaFiles = 0;
     
     /**
      * setter for quotaFiles

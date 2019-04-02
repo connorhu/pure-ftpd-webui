@@ -6,6 +6,10 @@ users:
    path: /users
    controller: App\Controller\UserController::list
 
+new_user:
+   path: /user/new
+   controller: App\Controller\UserController::new
+
 edit_user:
    path: /user/{user}/edit
    controller: App\Controller\UserController::edit
