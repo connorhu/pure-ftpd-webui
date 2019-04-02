@@ -7,6 +7,7 @@
         "ext-iconv": "*",
         "symfony/asset": "*",
         "symfony/console": "*",
+        "symfony/dotenv": "4.2.*",
         "symfony/flex": "^1.1",
         "symfony/form": "*",
         "symfony/framework-bundle": "*",
@@ -20,7 +21,6 @@
         "symfony/yaml": "*"
     },
     "require-dev": {
-        "symfony/dotenv": "*",
         "symfony/profiler-pack": "^1.0",
         "symfony/var-dumper": "*"
     },
