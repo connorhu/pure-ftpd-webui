@@ -46,6 +46,16 @@ class UserController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+    
+    protected function handleDelete($user, $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        
+        $em->remove($user);
+        $em->flush($user);
+        
+        return $this->redirectToRoute('users');
+    }
 
     public function new(Request $request)
     {
@@ -63,5 +73,16 @@ class UserController extends AbstractController
         }
         
         return $this->handleEdit($user, $request);
+    }
+
+    public function delete($user, Request $request)
+    {
+        $user = $this->getDoctrine()->getRepository(FtpUser::class)->find($user);
+        
+        if ($user === null) {
+            throw $this->createNotFoundException('User not found');
+        }
+        
+        return $this->handleDelete($user, $request);
     }
 }

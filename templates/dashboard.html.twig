@@ -3,6 +3,43 @@
 
 {% block content %}
 
-...
+    {% for session in sessions %}
+        {% if loop.first %}
+    
+            <h2>Active sessions</h2>
+    
+            <table class="table table-striped mt-3">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">{{ 'sessions.label.pid'|trans }}</th>
+                        <th scope="col">{{ 'sessions.label.user'|trans }}</th>
+                        <th scope="col">{{ 'sessions.label.elapsed_time'|trans }}</th>
+                        <th scope="col">{{ 'sessions.label.state'|trans }}</th>
+                        <th scope="col">{{ 'sessions.label.loaded_file'|trans }} / {{ 'sessions.label.client_host'|trans }}</th>
+                        <th scope="col">{{ 'sessions.label.size'|trans }}</th>
+                        <th scope="col">{{ 'sessions.label.resumed'|trans }}</th>
+                        <th scope="col">{{ 'sessions.label.bandwith'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+        {% endif %}
+                    <tr>
+                        <td>{{ session.pid }}</td>
+                        <td>{{ session.user }}</td>
+                        <td>{{ session.elapsed_time }}</td>
+                        <td>{{ session.state }}</td>
+                        <td>
+                            {{ session.loaded_file }}<br>
+                            {{ session.client_host }}
+                        </td>
+                        <td>{{ session.state == 'UL' ? session.current_size : session.total_size }}</td>
+                        <td>{{ session.resumed ? 'yes' : '' }}</td>
+                        <td>{{ session.bandwith }}</td>
+                    </tr>
+        {% if loop.last %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% endfor %}
 
 {% endblock %}

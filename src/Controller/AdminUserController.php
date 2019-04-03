@@ -62,5 +62,4 @@ class AdminUserController extends AbstractController
         
         return $this->handleEdit($user, $request);
     }
-    
 }

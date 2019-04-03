@@ -23,3 +23,15 @@ users:
 admin_users:
     field_username: Username
     field_language: Chosen language of the interface
+
+sessions:
+    label: 
+        pid: PID
+        user: User
+        elapsed_time: "Elapsed Time"
+        state: "State"
+        loaded_file: "Filename"
+        client_host: "Client Host"
+        size: "Size"
+        resumed: Resumed
+        bandwith: Bandwith

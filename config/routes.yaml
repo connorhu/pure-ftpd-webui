@@ -2,6 +2,10 @@ dashboard:
    path: /
    controller: App\Controller\DefaultController::dashboard
 
+sessions:
+   path: /sessions
+   controller: App\Controller\DefaultController::activeSessions
+
 users:
    path: /users
    controller: App\Controller\UserController::list
@@ -13,6 +17,10 @@ new_user:
 edit_user:
    path: /user/{user}/edit
    controller: App\Controller\UserController::edit
+
+delete_user:
+   path: /user/{user}/delete
+   controller: App\Controller\UserController::delete
 
 admin_users:
    path: /admin_users
