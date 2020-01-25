@@ -33,7 +33,7 @@
                 <tr>
                     <td><a href="{{ url('delete_user', {user: row.id}) }}" class="btn btn-danger">Törlés</a></td>
                     <td><a href="{{ url('edit_user', {user: row.id}) }}">{{ row.login }}</a></td>
-                    <td>{{ row.active }}</td>
+                    <td>{{ row.activeStatus }}</td>
                     <td>{{ row.uid }}</td>
                     <td>{{ row.gid }}</td>
                     <td>{{ row.uploadDirectory }}</td>

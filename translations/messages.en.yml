@@ -6,6 +6,10 @@ menu:
     settings: Settings
     webuictl: Pure-FTPd WebUI users
 
+settings:
+    name: Name
+    value: Value
+
 users:
     add_user: Add new user
     
@@ -25,7 +29,7 @@ admin_users:
     field_language: Chosen language of the interface
 
 sessions:
-    label: 
+    label:
         pid: PID
         user: User
         elapsed_time: "Elapsed Time"

@@ -2,19 +2,19 @@
 
 namespace App\Command;
 
+use App\Entity\AdminUser;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Doctrine\Common\Persistence\ObjectManager;
-use App\Entity\AdminUser;
 
 class CreateUserCommand extends Command
 {
     protected static $defaultName = 'app:create-user';
 
-    public function __construct(ObjectManager $entityManager, UserPasswordEncoderInterface $encoder)
+    public function __construct(EntityManagerInterface $entityManager, UserPasswordEncoderInterface $encoder)
     {
         parent::__construct();
         

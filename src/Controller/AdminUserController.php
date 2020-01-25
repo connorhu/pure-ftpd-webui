@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 use App\Entity\AdminUser;
 use App\Forms\Types\AdminUserType;
@@ -17,7 +18,7 @@ class AdminUserController extends AbstractController
         ]);
     }
     
-    protected function handleEdit($user, $request)
+    protected function handleEdit(AdminUser $user, Request $request, UserPasswordEncoderInterface $encoder)
     {
         $form = $this->createForm(AdminUserType::class, $user);
         
@@ -25,6 +26,11 @@ class AdminUserController extends AbstractController
         
         if ($form->isSubmitted() && $form->isValid()) {
             $isNew = $user->getId() === null;
+            
+            $password = $form['password']->getData();
+            if ($password) {
+                $user->setPassword($encoder->encodePassword($user, $password));
+            }
             
             $em = $this->getDoctrine()->getManager();
             
@@ -45,14 +51,14 @@ class AdminUserController extends AbstractController
         ]);
     }
     
-    public function new(Request $request)
+    public function new(Request $request, UserPasswordEncoderInterface $encoder)
     {
         $user = new AdminUser();
         
-        return $this->handleEdit($user, $request);
+        return $this->handleEdit($user, $request, $encoder);
     }
 
-    public function edit($user, Request $request)
+    public function edit($user, Request $request, UserPasswordEncoderInterface $encoder)
     {
         $user = $this->getDoctrine()->getRepository(AdminUser::class)->find($user);
         
@@ -60,6 +66,6 @@ class AdminUserController extends AbstractController
             throw $this->createNotFoundException('User not found');
         }
         
-        return $this->handleEdit($user, $request);
+        return $this->handleEdit($user, $request, $encoder);
     }
 }

@@ -26,6 +26,11 @@ class DefaultController extends AbstractController
         
             if (count($sessions) > 0) {
                 foreach ($sessions as $session) {
+                    
+                    if (count($session) < 12) {
+                        continue;
+                    }
+                    
                     list($pid, $account, $time, $state, $file, $clientHost, $serverIP, $serverPort, $currentSize, $totalSize, $resumed, $bandwith) = $session;
                 
                     $rows[] = [

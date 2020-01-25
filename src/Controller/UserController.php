@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 use App\Entity\FtpUser;
+use App\Entity\Setting;
 use App\Forms\Types\FtpUserType;
 
 class UserController extends AbstractController
@@ -17,7 +19,7 @@ class UserController extends AbstractController
         ]);
     }
     
-    protected function handleEdit($user, $request)
+    protected function handleEdit(FtpUser $user, Request $request, UserPasswordEncoderInterface $encoder)
     {
         $form = $this->createForm(FtpUserType::class, $user);
         
@@ -26,7 +28,10 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $isNew = $user->getId() === null;
             
-            $user->setPassword(md5($form['password']->getData()));
+            $password = $form['password']->getData();
+            if ($password) {
+                $user->setPassword($encoder->encodePassword($user, $password));
+            }
             
             $em = $this->getDoctrine()->getManager();
             
@@ -57,14 +62,32 @@ class UserController extends AbstractController
         return $this->redirectToRoute('users');
     }
 
-    public function new(Request $request)
+    public function new(Request $request, UserPasswordEncoderInterface $encoder)
     {
         $user = new FtpUser();
         
-        return $this->handleEdit($user, $request);
+        $em = $this->getDoctrine()->getManager();
+        $settingRepository = $em->getRepository(Setting::class);
+        
+        $settings = $settingRepository->getSettingsArray();
+        
+        if (isset($settings['FTPDUIDefaultDir'])) {
+            $user->setUploadDirectory($settings['FTPDUIDefaultDir']);
+        }
+        
+        if (isset($settings['FTPDUIDefaultUID'])) {
+            $user->setUid($settings['FTPDUIDefaultUID']);
+        }
+        
+        if (isset($settings['FTPDUIDefaultGID'])) {
+            $user->setGid($settings['FTPDUIDefaultGID']);
+        }
+        
+        
+        return $this->handleEdit($user, $request, $encoder);
     }
 
-    public function edit($user, Request $request)
+    public function edit($user, Request $request, UserPasswordEncoderInterface $encoder)
     {
         $user = $this->getDoctrine()->getRepository(FtpUser::class)->find($user);
         
@@ -72,7 +95,7 @@ class UserController extends AbstractController
             throw $this->createNotFoundException('User not found');
         }
         
-        return $this->handleEdit($user, $request);
+        return $this->handleEdit($user, $request, $encoder);
     }
 
     public function delete($user, Request $request)

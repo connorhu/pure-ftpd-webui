@@ -10,6 +10,10 @@ users:
    path: /users
    controller: App\Controller\UserController::list
 
+settings:
+   path: /settings
+   controller: App\Controller\SettingController::settings
+
 new_user:
    path: /user/new
    controller: App\Controller\UserController::new

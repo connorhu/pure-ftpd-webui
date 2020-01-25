@@ -5,13 +5,14 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity()
  * @ORM\Table(name="ftpd")
  * @UniqueEntity("login")
  */
-class FtpUser
+class FtpUser implements UserInterface
 {
     /**
      * @ORM\Id
@@ -82,14 +83,19 @@ class FtpUser
      * 
      * @return mixed return value for 
      */
-    public function getActive()
+    public function getActive() : bool
     {
         return $this->active;
     }
     
-    public function isActive()
+    public function isActive() : bool
     {
         return $this->active;
+    }
+    
+    public function getActiveStatus() : string
+    {
+        return $this->active ? 'Active' : 'Inactive';
     }
     
     /**
@@ -372,5 +378,20 @@ class FtpUser
     {
         return $this->comment;
     }
-
+    
+    public function getRoles() {
+        
+    }
+    
+    public function getSalt() {
+        
+    }
+    
+    public function getUsername() {
+        return $this->getLogin();
+    }
+    
+    public function eraseCredentials() {
+        
+    }
 }

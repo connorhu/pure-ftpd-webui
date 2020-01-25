@@ -7,6 +7,8 @@ security:
 
     encoders:
         App\Entity\AdminUser: bcrypt
+        App\Entity\FtpUser:
+          id: App\Security\Md5PasswordEncoder
 
     firewalls:
         dev:
