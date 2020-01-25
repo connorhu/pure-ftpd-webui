@@ -11,7 +11,6 @@ class DefaultController extends AbstractController
     {
         return $this->render('dashboard.html.twig', [
             'sessions' => $this->readSessionInformations(),
-            'version' => '0.1 alpha7',
         ]);
     }
 
