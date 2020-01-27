@@ -28,7 +28,7 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $isNew = $user->getId() === null;
             
-            $password = $form['password']->getData();
+            $password = $form['clear_password']->getData();
             if ($password) {
                 $user->setPassword($encoder->encodePassword($user, $password));
             }

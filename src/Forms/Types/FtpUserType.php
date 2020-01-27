@@ -15,8 +15,9 @@ class FtpUserType extends AbstractType
                 'required' => false,
                 'label' => 'Login',
             ])
-            ->add('password', CoreFormTypes\RepeatedType::class, [
+            ->add('clear_password', CoreFormTypes\RepeatedType::class, [
                 'required' => false,
+                'mapped' => false,
                 'label' => 'Password',
                 'type' => CoreFormTypes\PasswordType::class,
                 'first_options' => [
